@@ -1,4 +1,4 @@
-package com.soict.hoangviet.myapplication
+package com.soict.hoangviet.myapplication.test
 
 import android.annotation.SuppressLint
 import android.content.Context

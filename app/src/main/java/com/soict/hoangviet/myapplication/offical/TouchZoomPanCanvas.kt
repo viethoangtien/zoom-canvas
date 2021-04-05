@@ -1,20 +1,20 @@
-package com.soict.hoangviet.myapplication
+package com.soict.hoangviet.myapplication.offical
 
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
 import android.view.View
 
-
-class TouchExampleView : View {
+class TouchZoomPanCanvas : View {
     companion object {
         const val INVALID_POINTER_ID = -1
+        const val MAX_SCALE = 5f
+        const val MIN_SCALE = 1f
     }
 
     private val paint: Paint = Paint().apply {
@@ -24,7 +24,8 @@ class TouchExampleView : View {
     private val radius = 100f
 
     // The ‘active pointer’ is the one currently moving our object.
-    private var mActivePointerId = INVALID_POINTER_ID
+    private var mActivePointerId =
+        INVALID_POINTER_ID
 
     private lateinit var mScaleDetector: ScaleGestureDetector
     private var mScaleFactor = 1f
@@ -49,24 +50,21 @@ class TouchExampleView : View {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.save()
-        Log.d("myLog", "mPosX: $mPosX")
-        Log.d("myLog", "mPosY: $mPosY")
-        Log.d("myLog", "mScaleFactor: $mScaleFactor")
-        Log.d("myLog", "viewWidth: $viewWidth")
 
-        if (mPosX > 0f) {
-            mPosX = 0f
-        } else if (mPosX < (1 - mScaleFactor) * viewWidth) {
-            mPosX = (1 - mScaleFactor) * viewWidth
+        if (mPosX != 0f && mPosY != 0f) {
+            if (mPosX > (mScaleFactor - 1) * viewWidth / 2) {
+                mPosX = (mScaleFactor - 1) * viewWidth / 2
+            } else if (mPosX < (1 - mScaleFactor) * viewWidth / 2) {
+                mPosX = (1 - mScaleFactor) * viewWidth / 2
+            }
+            if (mPosY > (mScaleFactor - 1) * viewHeight / 2) {
+                mPosY = (mScaleFactor - 1) * viewHeight / 2
+            } else if (mPosY < (1 - mScaleFactor) * viewHeight / 2) {
+                mPosY = (1 - mScaleFactor) * viewHeight / 2
+            }
         }
-        if (mPosY > 0f) {
-            mPosY = 0f
-        } else if (mPosY < (1 - mScaleFactor) * viewHeight) {
-            mPosY = (1 - mScaleFactor) * viewHeight
-        }
-
         canvas.translate(mPosX, mPosY)
-        canvas.scale(mScaleFactor, mScaleFactor)
+        canvas.scale(mScaleFactor, mScaleFactor, viewWidth / 2f, viewHeight / 2f)
         //Draw
         canvas.drawCircle(0f, 0f, radius, paint)
         for (i in 2..40 step 2) {
@@ -120,10 +118,12 @@ class TouchExampleView : View {
                 mLastTouchY = y
             }
             MotionEvent.ACTION_UP -> {
-                mActivePointerId = INVALID_POINTER_ID
+                mActivePointerId =
+                    INVALID_POINTER_ID
             }
             MotionEvent.ACTION_CANCEL -> {
-                mActivePointerId = INVALID_POINTER_ID
+                mActivePointerId =
+                    INVALID_POINTER_ID
             }
             MotionEvent.ACTION_POINTER_UP -> {
 
@@ -150,7 +150,7 @@ class TouchExampleView : View {
             mScaleFactor *= detector.scaleFactor
 
             // Don't let the object get too small or too large.
-            mScaleFactor = Math.max(1f, Math.min(mScaleFactor, 5.0f))
+            mScaleFactor = MIN_SCALE.coerceAtLeast(mScaleFactor.coerceAtMost(MAX_SCALE))
             invalidate()
             return true
         }

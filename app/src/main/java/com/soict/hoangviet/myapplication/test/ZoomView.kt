@@ -1,4 +1,4 @@
-package com.soict.hoangviet.myapplication
+package com.soict.hoangviet.myapplication.test
 
 import android.content.Context
 import android.graphics.Canvas
@@ -6,11 +6,9 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
-import androidx.core.content.ContextCompat
 import kotlin.math.pow
 
 class ZoomView : androidx.appcompat.widget.AppCompatImageView {
@@ -52,7 +50,8 @@ class ZoomView : androidx.appcompat.widget.AppCompatImageView {
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.getAction() and MotionEvent.ACTION_MASK) {
             MotionEvent.ACTION_DOWN -> {
-                mode = DRAG
+                mode =
+                    DRAG
 
                 //We assign the current X and Y coordinate of the finger to startX and startY minus the previously translated
                 //amount for each coordinates This works even when we are translating the first time because the initial
@@ -77,7 +76,8 @@ class ZoomView : androidx.appcompat.widget.AppCompatImageView {
             MotionEvent.ACTION_POINTER_DOWN -> mode =
                 ZOOM
             MotionEvent.ACTION_UP -> {
-                mode = NONE
+                mode =
+                    NONE
                 dragged = false
 
                 //All fingers went up, so let&#039;s save the value of translateX and translateY into previousTranslateX and
@@ -86,7 +86,8 @@ class ZoomView : androidx.appcompat.widget.AppCompatImageView {
                 previousTranslateY = translateY
             }
             MotionEvent.ACTION_POINTER_UP -> {
-                mode = NONE
+                mode =
+                    NONE
 
                 //This is not strictly necessary; we save the value of translateX and translateY into previousTranslateX
                 //and previousTranslateY when the second finger goes up
