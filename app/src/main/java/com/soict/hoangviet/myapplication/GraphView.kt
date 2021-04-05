@@ -42,26 +42,31 @@ class GraphView(context: Context, attributes: AttributeSet) : View(context, attr
         // Set the canvas origin to the center of the screen only on the first time onDraw is called
         //  (otherwise it'll break the panning code)
         if (firstDraw) {
-            canvasX = width/2f
-            canvasY = height/2f
+            canvasX = width / 2f
+            canvasY = height / 2f
             firstDraw = false
         }
-        canvas.scale(scaleFactor, scaleFactor) // Scale the canvas according to scaleFactor
-
         // Just draw a bunch of circles (this is for testing panning and zooming
         paint.style = Paint.Style.FILL
         paint.color = Color.parseColor("#000000")
         canvas.translate(canvasX, canvasY)
-        canvas.drawCircle(0f,0f,radius,paint)
+        canvas.scale(
+            scaleFactor,
+            scaleFactor,
+            canvasX,
+            canvasY
+        ) // Scale the canvas according to scaleFactor
+
+        canvas.drawCircle(0f, 0f, radius, paint)
         for (i in 2..40 step 2) {
-            canvas.drawCircle(radius*i,0f,radius,paint)
-            canvas.drawCircle(-radius*i,0f,radius,paint)
-            canvas.drawCircle(0f,radius*i,radius,paint)
-            canvas.drawCircle(0f,-radius*i,radius,paint)
-            canvas.drawCircle(radius*i,radius*i,radius,paint)
-            canvas.drawCircle(radius*i,-radius*i,radius,paint)
-            canvas.drawCircle(-radius*i,radius*i,radius,paint)
-            canvas.drawCircle(-radius*i,-radius*i,radius,paint)
+            canvas.drawCircle(radius * i, 0f, radius, paint)
+            canvas.drawCircle(-radius * i, 0f, radius, paint)
+            canvas.drawCircle(0f, radius * i, radius, paint)
+            canvas.drawCircle(0f, -radius * i, radius, paint)
+            canvas.drawCircle(radius * i, radius * i, radius, paint)
+            canvas.drawCircle(radius * i, -radius * i, radius, paint)
+            canvas.drawCircle(-radius * i, radius * i, radius, paint)
+            canvas.drawCircle(-radius * i, -radius * i, radius, paint)
         }
 
         canvas.restore()
@@ -87,7 +92,7 @@ class GraphView(context: Context, attributes: AttributeSet) : View(context, attr
         // - Make sure that when the user zooms in or out the focal point is the midpoint of a line
         //    connecting the main and pointer fingers
 
-        when(event.action and ACTION_MASK) {
+        when (event.action and ACTION_MASK) {
             ACTION_DOWN -> {
                 // Might not be necessary; check out later
                 dragging = true
@@ -106,8 +111,8 @@ class GraphView(context: Context, attributes: AttributeSet) : View(context, attr
                     // Move the canvas dx units right and dy units down
                     // dx and dy are divided by scaleFactor so that panning speeds are consistent
                     //  with the zoom level
-                    canvasX += dx/scaleFactor
-                    canvasY += dy/scaleFactor
+                    canvasX += dx / scaleFactor
+                    canvasY += dy / scaleFactor
 
                     invalidate() // Re-draw the canvas
 
@@ -127,9 +132,11 @@ class GraphView(context: Context, attributes: AttributeSet) : View(context, attr
 
         detector.onTouchEvent(event) // Listen for scale gestures (i.e. pinching or double tap+drag
         // Just some useful coordinate data
-        Log.d("TOUCHEVENT", "x: $x, y: $y,\ninitY: $initX, initY,\n" +
-                "canvasX: $canvasX, canvasY: $canvasY,\nwidth: $dispWidth, height: $dispHeight\n" +
-                "focusX: ${detector.focusX}, focusY: ${detector.focusY}")
+        Log.d(
+            "TOUCHEVENT", "x: $x, y: $y,\ninitY: $initX, initY,\n" +
+                    "canvasX: $canvasX, canvasY: $canvasY,\nwidth: $dispWidth, height: $dispHeight\n" +
+                    "focusX: ${detector.focusX}, focusY: ${detector.focusY}"
+        )
         // Data pertaining to fingers for responsiveness and stuff
         Log.d("TOUCHEVENT", "Action: ${event.action and MotionEvent.ACTION_MASK}\n")
 
