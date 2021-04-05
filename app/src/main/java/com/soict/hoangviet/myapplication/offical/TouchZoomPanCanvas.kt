@@ -77,7 +77,6 @@ class TouchZoomPanCanvas : View {
             canvas.drawCircle(-radius * i, radius * i, radius, paint)
             canvas.drawCircle(-radius * i, -radius * i, radius, paint)
         }
-
         canvas.restore()
     }
 
